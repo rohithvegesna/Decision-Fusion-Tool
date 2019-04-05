@@ -12,53 +12,35 @@
 
 <div class="container-fluid text-center">
 	<?php include 'weightsassign.php'; ?>
+	<?php include 'accuracy.php'; ?>
+	<?php include 'changevals.php'; ?>
 	<table class="table table-bordered">
 		<tbody>
-		<?php
-			$offset = 0;
-			$cnt = 0;
-			$num_columns = $sqrtlength; //adjust number of columns
-			$table_html = "";
-			$avg = 0;
-			while($slice = array_slice($inputarr,$offset,$num_columns)){
-				$offset += $num_columns;
-				$row_html = '';	
-				$y = 0;
-				$n = 0;			
-				foreach($slice as $num){
-					if($num[0] == 'Y'){
-						$y = $y+$num[1];
+			<?php
+				$finalarr = [];
+				for($i = 0; $i <= ($outputlen-1); $i++){
+					for($j = 0; $j <= 10; $j++){
+						for($k = 0; $k <= 10; $k++){
+							$changedarr = changevals($i, ($j/10), ($k/10));
+							$accuracy = accuracy($changedarr);
+							if($accuracy >= 80){
+								$finalarr = $changedarr;
+								break;
+							}
+						}
+						if($accuracy >= 80){
+							break;
+						}
 					}
-					elseif($num[0] == 'N'){
-						$n = $n+$num[1];
+					if($accuracy >= 80){
+						break;
 					}
-					$row_html .= "<td>".$num[0]."(".$num[1].")</td>";
 				}
-				if($y > $n)
-				{
-					$greater = $y;
-					$choise = 'Y';
-				}
-				else
-				{
-					$greater = $n;
-					$choise = 'N';
-				}
-				$row_html .= "<td style='border-width: 5px; border-color: cadetblue;'>".$choise."(".$greater.")</td>";
-				$row_html .= "<td style='border-width: 5px; border-color: darkgreen;'>".$output[$cnt]."</td>";
-				$table_html .= "<tr>$row_html</tr>";
-				
-				if($choise == $output[$cnt]){
-					$avg++;
-				}
-				$cnt++;
-			}
-			echo $table_html;
-			$accuracy = (abs($avg-$outputlen)/$outputlen)*100;
-		?>
+			?>
+			<?php include 'printtable.php'; ?>
+			<?php echo accuracy();?>
 		</tbody>
 	</table>
-	<?php echo $accuracy;?>
 </div>
 
 </body>
