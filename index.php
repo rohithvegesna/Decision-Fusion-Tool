@@ -11,42 +11,54 @@
 <body>
 
 <div class="container-fluid text-center">
-	<?php
-		$inputfile = file('input.txt', FILE_IGNORE_NEW_LINES);
-		$input = implode("",$inputfile);
-		$inputlen = strlen($input);
-		$inputarr = [];
-		for($i = 0; $i <= ($inputlen-1); $i++){
-			$inputarr[$i][0] = $input[$i];
-			if($i <= (sqrt($inputlen)-1)){
-				$weight = (rand(0,10)/10);
-			}
-			else{
-				$weight = $inputarr[($i-sqrt($inputlen))][1];
-			}
-			$inputarr[$i][1] = $weight;
-		}
-	?>
+	<?php include 'weightsassign.php'; ?>
 	<table class="table table-bordered">
 		<tbody>
 		<?php
-			for($i = 0; $i <= (sqrt($inputlen)-1); $i++){
-				if($i > 0){
-					$num = $i+5;
+			$offset = 0;
+			$cnt = 0;
+			$num_columns = $sqrtlength; //adjust number of columns
+			$table_html = "";
+			$avg = 0;
+			while($slice = array_slice($inputarr,$offset,$num_columns)){
+				$offset += $num_columns;
+				$row_html = '';	
+				$y = 0;
+				$n = 0;			
+				foreach($slice as $num){
+					if($num[0] == 'Y'){
+						$y = $y+$num[1];
+					}
+					elseif($num[0] == 'N'){
+						$n = $n+$num[1];
+					}
+					$row_html .= "<td>".$num[0]."(".$num[1].")</td>";
 				}
-				else{
-					$num = $i;
+				if($y > $n)
+				{
+					$greater = $y;
+					$choise = 'Y';
 				}
-				echo '<tr>
-						<td>'.$inputarr[$num][0].' ('.$inputarr[$num][1].')</td>
-						<td>'.$inputarr[$num+1][0].' ('.$inputarr[$num+1][1].')</td>
-						<td>'.$inputarr[$num+2][0].' ('.$inputarr[$num+2][1].')</td>
-						<td>'.$inputarr[$num+3][0].' ('.$inputarr[$num+3][1].')</td>
-					  </tr>';
+				else
+				{
+					$greater = $n;
+					$choise = 'N';
+				}
+				$row_html .= "<td style='border-width: 5px; border-color: cadetblue;'>".$choise."(".$greater.")</td>";
+				$row_html .= "<td style='border-width: 5px; border-color: darkgreen;'>".$output[$cnt]."</td>";
+				$table_html .= "<tr>$row_html</tr>";
+				
+				if($choise == $output[$cnt]){
+					$avg++;
+				}
+				$cnt++;
 			}
+			echo $table_html;
+			$accuracy = (abs($avg-$outputlen)/$outputlen)*100;
 		?>
 		</tbody>
 	</table>
+	<?php echo $accuracy;?>
 </div>
 
 </body>
