@@ -1,8 +1,9 @@
 <?php
+	echo 'Accuracy : '.$acchigh;
 	$offset = 0;
 	$cnt = 0;
 	$num_columns = $sqrtlength; //adjust number of columns
-	$table_html = "";
+	$table_html = '<table class="table table-bordered"><tbody>';
 	$avg = 0;
 	while($slice = array_slice($finalarr,$offset,$num_columns)){
 		$offset += $num_columns;
@@ -37,5 +38,6 @@
 		}
 		$cnt++;
 	}
-	echo $table_html;
+	$table_html .= '</tbody></table>';
+	echo $table_html.'<br><br>';
 ?>

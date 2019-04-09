@@ -14,33 +14,23 @@
 	<?php include 'weightsassign.php'; ?>
 	<?php include 'accuracy.php'; ?>
 	<?php include 'changevals.php'; ?>
-	<table class="table table-bordered">
-		<tbody>
 			<?php
 				$finalarr = [];
+				$acchigh = 0;
 				for($i = 0; $i <= ($outputlen-1); $i++){
 					for($j = 0; $j <= 10; $j++){
 						for($k = 0; $k <= 10; $k++){
 							$changedarr = changevals($i, ($j/10), ($k/10));
 							$accuracy = accuracy($changedarr);
-							if($accuracy >= 80){
+							if($accuracy >= $acchigh){
 								$finalarr = $changedarr;
-								break;
+								$acchigh = $accuracy;
 							}
 						}
-						if($accuracy >= 80){
-							break;
-						}
-					}
-					if($accuracy >= 80){
-						break;
 					}
 				}
 			?>
 			<?php include 'printtable.php'; ?>
-			<?php echo accuracy();?>
-		</tbody>
-	</table>
 </div>
 
 </body>
